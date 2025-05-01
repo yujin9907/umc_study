@@ -2,6 +2,7 @@ package umc.spring.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.spring.domain.alaram.Alarm;
 import umc.spring.domain.common.BaseEntity;
 import umc.spring.domain.enums.Gender;
 import umc.spring.domain.enums.MemberStatus;
@@ -62,4 +63,7 @@ public class Member extends BaseEntity {
 
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
   private List<MemberMission> memberMissionList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+  private List<Alarm> alarmList = new ArrayList<>();
 }
