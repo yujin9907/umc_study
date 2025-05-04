@@ -84,8 +84,8 @@ fabric.properties
 # Ignore everything but code style settings and run configurations
 # that are supposed to be shared within teams.
 
-.idea/*
 
+.idea/*
 !.idea/codeStyles
 !.idea/runConfigurations
 
@@ -200,5 +200,7 @@ gradle-app.setting
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
+
+
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,gradle,intellij+all,java
