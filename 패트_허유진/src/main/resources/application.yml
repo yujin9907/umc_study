@@ -25,3 +25,6 @@ spring:
         hbm2ddl:
           auto: none
         default_batch_fetch_size: 100
+
+page:
+  limit: 30
