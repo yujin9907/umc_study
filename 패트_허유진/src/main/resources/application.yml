@@ -24,4 +24,4 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         hbm2ddl:
           auto: none
-        default_batch_fetch_size: 1000
+        default_batch_fetch_size: 100

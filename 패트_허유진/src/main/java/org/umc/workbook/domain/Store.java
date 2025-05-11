@@ -34,7 +34,12 @@ public class Store extends BaseEntity {
     private Float score; // TODO 쓸지말지
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_type_id")
     private StoreType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    private Region region;
 
     @OneToMany(mappedBy = "store")
     private List<Mission> missions = new ArrayList<>();
