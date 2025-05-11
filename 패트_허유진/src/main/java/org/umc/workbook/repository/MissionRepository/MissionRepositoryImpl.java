@@ -50,7 +50,7 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
     }
 
     @Override
-    public List<Mission> findHoneMissionPaging(Long lastMissionId) {
+    public List<Mission> findHoneMissionPaging(Long lastMissionId, Long memberId) {
         List<Mission> results = jpaQueryFactory
                 .select(mission)
                 .from(mission)
@@ -64,7 +64,7 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
                                 JPAExpressions
                                         .select(memberMission.mission.id)
                                         .from(memberMission)
-                                        .where(memberMission.member.id.eq(member.id))
+                                        .where(memberMission.member.id.eq(memberId))
                         )
                 )
                 .orderBy(mission.id.desc())
