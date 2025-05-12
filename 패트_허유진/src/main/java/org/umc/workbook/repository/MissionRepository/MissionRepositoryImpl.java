@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.umc.workbook.domain.Mission;
 import org.umc.workbook.domain.QMission;
 import org.umc.workbook.domain.enums.MissionStatus;
+import org.umc.workbook.domain.mapping.MemberMission;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,9 +30,9 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
 
 
     @Override
-    public List<Mission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {
-        List<Mission> result = jpaQueryFactory
-                .select(mission)
+    public List<MemberMission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {
+        List<MemberMission> result = jpaQueryFactory
+                .select(memberMission)
                 .from(memberMission)
                 .leftJoin(mission).on(memberMission.mission.id.eq(mission.id))
                 .where(
