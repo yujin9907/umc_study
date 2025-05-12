@@ -34,7 +34,9 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
         List<MemberMission> result = jpaQueryFactory
                 .select(memberMission)
                 .from(memberMission)
-                .leftJoin(mission).on(memberMission.mission.id.eq(mission.id))
+                .leftJoin(memberMission.mission).fetchJoin()
+                .leftJoin(memberMission.member).fetchJoin()
+                .leftJoin(memberMission.mission.store).fetchJoin()
                 .where(
                         memberMission.member.id.eq(memberId),
                         memberMission.status.in(List.of(MissionStatus.PROGRESS, MissionStatus.SUCCESS)),
@@ -58,7 +60,7 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
                 .join(mission.store, store)
                 .join(store.region, region)
                 .where(
-                        region.name.eq(region.name),
+                        //region.name.eq(region.name),
                         mission.deadline.gt(LocalDateTime.now()),
                         mission.id.lt(lastMissionId),
                         mission.id.notIn(
