@@ -45,6 +45,8 @@ dependencies {
 //    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.3'
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // slack webhook
+    implementation("com.slack.api:slack-api-client:1.45.3")
 }
 
 tasks.named('test') {

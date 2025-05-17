@@ -2,16 +2,17 @@ package org.umc.workbook.apiPayload.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -19,14 +20,21 @@ import org.umc.workbook.apiPayload.ApiResponse;
 import org.umc.workbook.apiPayload.ErrorReasonDto;
 import org.umc.workbook.apiPayload.code.ErrorStatus;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice(annotations = {RestController.class})
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
+    private final RestTemplate restTemplate = new RestTemplate();
+    @Value("${slack.webhook.url}")
+    private String slackWebhookUrl;
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
@@ -54,7 +62,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> exception(Exception e, WebRequest request) {
+    public ResponseEntity<Object> exception(Exception e, HttpServletRequest request) {
         e.printStackTrace();
 
         return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY, ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(),request, e.getMessage());
@@ -63,7 +71,14 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = GeneralException.class)
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest request) {
         ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
-        return handleExceptionInternal(generalException,errorReasonHttpStatus,null,request);
+
+        // slack webhook
+        if (generalException.getCode().equals(ErrorStatus._INTERNAL_SERVER_ERROR)
+                && activeProfile.equals("prod")) {
+            sendSlackErrorNotification(generalException, request);
+        }
+
+        return handleExceptionInternal(generalException,errorReasonHttpStatus,null, request);
     }
 
     @Override
@@ -102,14 +117,16 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleExceptionInternalFalse(Exception e, ErrorStatus errorCommonStatus,
-                                                                HttpHeaders headers, HttpStatus status, WebRequest request, String errorPoint) {
+                                                                HttpHeaders headers, HttpStatus status, HttpServletRequest request, String errorPoint) {
         ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(),errorCommonStatus.getMessage(),errorPoint);
+        WebRequest webRequest = new ServletWebRequest(request);
+
         return super.handleExceptionInternal(
                 e,
                 body,
                 headers,
                 status,
-                request
+                webRequest
         );
     }
 
@@ -137,4 +154,41 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
+    private void sendSlackErrorNotification(Exception ex, HttpServletRequest request) {
+
+
+        String timestamp = LocalDateTime.now().toString();
+        String message = String.format(
+                "*[🚨 500 Error 발생]* \n" +
+                        "> *요청 URL:* `%s` \n" +
+                        "> *발생 시각:* `%s` \n" +
+                        "> *에러 메시지:* `%s` \n" +
+                        "> *예외 타입:* `%s`",
+                request.getRequestURI(),
+                timestamp,
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(
+                    Map.of("text", message),
+                    headers
+            );
+
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    slackWebhookUrl,
+                    requestEntity,
+                    String.class
+            );
+
+            log.info("Slack Webhook 응답: {}", response.getStatusCode());
+
+        } catch (Exception e) {
+            log.warn("Slack Webhook 전송 실패: {}", e.getMessage());
+        }
+    }
 }

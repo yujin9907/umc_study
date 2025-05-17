@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: ERROR
+
+page:
+  limit: 30
+
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/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
