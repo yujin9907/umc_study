@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -65,6 +66,25 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(generalException,errorReasonHttpStatus,null,request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        String parameterName = ex.getParameterName();
+        String message = String.format("요청 파라미터 '%s'가 필요합니다.", parameterName);
+
+        ApiResponse<Object> body = ApiResponse.onFailure(
+                ErrorStatus._BAD_REQUEST.getCode(),
+                message,
+                null
+        );
+
+        return super.handleExceptionInternal(ex, body, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
     private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDto reason,
                                                            HttpHeaders headers, HttpServletRequest request) {
 
@@ -116,4 +136,5 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 request
         );
     }
+
 }
