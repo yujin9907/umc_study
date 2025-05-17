@@ -7,9 +7,18 @@ import org.umc.workbook.domain.enums.MissionStatus;
 import org.umc.workbook.domain.mapping.MemberMission;
 import org.umc.workbook.dto.MissionDto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MissionConverter {
 
-    public static MissionDto toDto(MemberMission memberMission, Store store,
+    public static List<MissionDto> toMissionByMember(List<MemberMission> missions){
+        return missions.stream().map(m -> MissionConverter.toDto(m, m.getMission().getStore(),
+                m.getMission(), m.getMember())).collect(Collectors.toList());
+
+    }
+
+    private static MissionDto toDto(MemberMission memberMission, Store store,
                                    Mission mission, Member member) {
         MissionDto.StoreDto storeDto = MissionDto.StoreDto.builder()
                 .id(store.getId())
