@@ -29,7 +29,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // store
     STORE_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORETYPE4001","음식 종류가 없습니다."),
-
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001","가게가 없습니다."),
     REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "REGION4001","지역이 없습니다.");
 
 
