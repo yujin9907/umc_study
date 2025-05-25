@@ -2,6 +2,7 @@ package org.umc.workbook.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.umc.workbook.apiPayload.ApiResponse;
 import org.umc.workbook.converter.StoreConverter;
@@ -10,6 +11,7 @@ import org.umc.workbook.dto.StoreDto;
 import org.umc.workbook.service.StoreService.StoreQueryService;
 
 @RestController
+@RequestMapping("store")
 @RequiredArgsConstructor
 public class StoreController {
 
