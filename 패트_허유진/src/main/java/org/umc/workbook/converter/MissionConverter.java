@@ -35,7 +35,17 @@ public class MissionConverter {
                 .build();
     }
 
-    public static Mission toEntity(MissionDto dto) {
-        return null;
+    public static MemberMission toMemberMission(MissionDto.addMemberRequest requestDto) {
+        return MemberMission.builder()
+                .status(requestDto.getStatus())
+                .build();
+    }
+
+    public static MissionDto.addMemberResult toMemberMissionDto(MemberMission memberMission) {
+        return MissionDto.addMemberResult.builder()
+                .memberMissionId(memberMission.getId())
+                .status(memberMission.getStatus())
+                .createAt(memberMission.getCreatedAt())
+                .build();
     }
 }
