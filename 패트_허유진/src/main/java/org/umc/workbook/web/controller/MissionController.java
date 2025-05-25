@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.umc.workbook.apiPayload.ApiResponse;
 import org.umc.workbook.converter.MissionConverter;
 import org.umc.workbook.domain.mapping.MemberMission;
+import org.umc.workbook.dto.MissionDto;
+import org.umc.workbook.repository.MemberMissionRepository;
 import org.umc.workbook.service.MissionService.MissionService;
 
 import java.time.LocalDateTime;
@@ -29,4 +31,10 @@ public class MissionController {
 
     }
 
+
+    @PutMapping("active")
+    public ApiResponse<?> addMemberMission(MissionDto.addMemberRequest requestDto) {
+        MemberMission memberMission = missionService.addMemberMission(requestDto);
+        return ApiResponse.onSuccess(MissionConverter.toMemberMissionDto(memberMission));
+    }
 }
