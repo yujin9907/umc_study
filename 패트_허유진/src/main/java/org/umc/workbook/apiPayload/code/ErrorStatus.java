@@ -12,8 +12,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 가장 일반적인 응답
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
-    _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
-    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
+    _BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
+    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
 
@@ -25,7 +25,12 @@ public enum ErrorStatus implements BaseErrorCode {
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "게시글이 없습니다."),
 
     // food
-    FOOD_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "FOODER404", "음식 카테고리가 없습니다.");
+    FOOD_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "FOODER404", "음식 카테고리가 없습니다."),
+
+    // store
+    STORE_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORETYPE4001","음식 종류가 없습니다."),
+
+    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "REGION4001","지역이 없습니다.");
 
 
     private final HttpStatus httpStatus;
@@ -51,4 +56,4 @@ public enum ErrorStatus implements BaseErrorCode {
                 .build()
                 ;
     }
-}
+    }
