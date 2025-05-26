@@ -11,7 +11,6 @@ import org.umc.workbook.service.MissionService.MissionService;
 
 import java.time.LocalDateTime;
 
-@EnableJpaAuditing
 @SpringBootApplication
 public class WorkbookApplication {
 
