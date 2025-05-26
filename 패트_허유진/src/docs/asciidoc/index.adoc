@@ -1,0 +1,26 @@
+= API 명세
+:doctype: book
+:icons: font
+// 문서에 표기되는 코드들 하이라이트
+:source-highlighter: prettify
+// 컨텐츠를 왼쪽에 두겠다는 의미
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[mission]]
+== 리뷰
+[[get-member-missions-API]]
+=== 진행 중 리뷰 목록 조회 API
+// operation은 [스니펫 폴더명][snipeets='사용할 조각, 조각']으로 지정합니다.
+operation::get-member-missions[snippets='http-request,query-parameters,http-response,response-fields']
+
+// include::{snippets}/get-member-missions/http-request.adoc[]
+// include::{snippets}/get-member-missions/query-parameters.adoc[]
+//
+// include::{snippets}/get-member-missions/http-response.adoc[]
+// include::{snippets}/get-member-missions/response-body.adoc[]
+// include::{snippets}/get-member-missions/response-fields.adoc[]
+// [[모집-ID-조회-API]]
+// === 모집 ID 조회 API
+// operation::게시물 ID 조회 API[snippets='http-request,request-parameters,request-parts,http-response,response-fields']
