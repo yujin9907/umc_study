@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.7'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'org.umc'
@@ -18,6 +18,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
@@ -49,6 +50,9 @@ dependencies {
     implementation("com.slack.api:slack-api-client:1.45.3")
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+    // rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 tasks.named('test') {
@@ -56,23 +60,56 @@ tasks.named('test') {
 }
 
 // Querydsl 설정부
-def generated = 'src/main/generated'
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = generated
+//def generated = 'src/main/generated'
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = generated
+//}
+//sourceSets {
+//    main.java.srcDir generated
+//}
+//
+//compileQuerydsl{
+//    options.annotationProcessorPath = configurations.querydsl
+//}
+//
+//configurations {
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//    querydsl.extendsFrom compileClasspath
+//}
+clean {
+    delete file('src/main/generated')
 }
-sourceSets {
-    main.java.srcDir generated
+
+// rest docs
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
-compileQuerydsl{
-    options.annotationProcessorPath = configurations.querydsl
+test {
+    outputs.dir snippetsDir
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+
+    sources {
+        include("**/index.adoc")
     }
-    querydsl.extendsFrom compileClasspath
+    baseDirFollowsSourceDir()
+    dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}") {
+        println(file("${asciidoctor.outputDir}")) // 경로 확인
+        println(file('static/docs'))
+        println(file('src/main/resources/static/docs'))
+        into 'src/main/resources/static/docs'
+    }
 }
