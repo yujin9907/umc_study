@@ -9,11 +9,31 @@ import org.umc.workbook.domain.Member;
 import org.umc.workbook.domain.ReviewImage;
 import org.umc.workbook.domain.Store;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDto {
+
+    @Data
+    @Builder
+    public static class PreviewDto {
+        private String ownerNickname;
+        private Float score;
+        private String body;
+        LocalDate createdAt;
+    }
+    @Data
+    @Builder
+    public static class ReviewResponseDto {
+        private boolean isLast;
+        private boolean isFirst;
+        private Integer totalPage;
+        private Long totalElements;
+        private Integer listSize;
+        private List<ReviewDto.PreviewDto> reviewList;
+    }
 
     @Data
     public static class saveRequest {
