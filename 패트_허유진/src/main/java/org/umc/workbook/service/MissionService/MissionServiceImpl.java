@@ -1,6 +1,8 @@
 package org.umc.workbook.service.MissionService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.umc.workbook.apiPayload.code.ErrorStatus;
@@ -26,16 +28,17 @@ public class MissionServiceImpl implements MissionService {
     private final MemberRepository memberRepository;
     private final MemberMissionRepository memberMissionRepository;
 
+    @Override
+    public Page<Mission> getMissionsByStore(Long storeId, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        return missionRepository.findAllByStoreId(storeId, pageRequest);
+    }
+
     // 회원의 진행 중 미션 확인
     @Override
     public List<MemberMission> findMissionByMember(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {
         return missionRepository
                 .findMissionByMemberPaging(memberId, lastReward, lastCreatedAt, lastMissionId);
-    }
-
-    @Override
-    public List<Mission> findHomeMission(Long missionId, Long memberId) {
-        return missionRepository.findHoneMissionPaging(missionId, memberId);
     }
 
     @Override
