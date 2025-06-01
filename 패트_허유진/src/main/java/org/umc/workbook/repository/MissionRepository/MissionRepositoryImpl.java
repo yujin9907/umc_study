@@ -27,7 +27,26 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
     @Value("${page.limit}")
     private int limit;
-
+    @Override
+    public List<MemberMission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId, int limit) {
+        return jpaQueryFactory
+                .selectFrom(memberMission)
+                .leftJoin(memberMission.member).fetchJoin()
+                .leftJoin(memberMission.mission).fetchJoin()
+                .leftJoin(memberMission.mission.store).fetchJoin()
+                .where(
+                        memberMission.member.id.eq(memberId),
+                        memberMission.status.in(List.of(MissionStatus.PROGRESS, MissionStatus.SUCCESS)),
+                        cursorPredicate(memberMission.mission, lastReward, lastCreatedAt, lastMissionId)
+                )
+                .orderBy(
+                        memberMission.mission.reward.desc(),
+                        memberMission.mission.createdAt.desc(),
+                        memberMission.mission.id.desc()
+                )
+                .limit(limit)
+                .fetch();
+    }
 
     @Override
     public List<MemberMission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {

@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface MissionService {
     Page<Mission> getMissionsByStore(Long storeId, int page);
-    List<MemberMission> findMissionByMember(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId);
+    MissionDto.CursorResponseDto findMissionByMember(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId);
     MemberMission addMemberMission(MissionDto.addMemberRequest requestDto);
 }

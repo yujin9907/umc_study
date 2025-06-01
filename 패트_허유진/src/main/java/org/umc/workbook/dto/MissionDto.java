@@ -34,6 +34,13 @@ public class MissionDto {
         private List<?> missionList;
     }
 
+    @Data
+    @Builder
+    public static class CursorResponseDto {
+        private boolean hasNext;
+        private List<?> missionList;
+    }
+
     @Builder
     @Data
     public static class MemberList {

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface MissionRepositoryCustom {
 
+    List<MemberMission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId, int limit);
     List<MemberMission> findMissionByMemberPaging(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId);
 
     List<Mission> findHoneMissionPaging(Long lastMissionId, Long memberId);

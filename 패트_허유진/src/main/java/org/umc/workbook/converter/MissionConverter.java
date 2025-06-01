@@ -6,7 +6,6 @@ import org.umc.workbook.domain.Mission;
 import org.umc.workbook.domain.Store;
 import org.umc.workbook.domain.mapping.MemberMission;
 import org.umc.workbook.dto.MissionDto;
-import org.umc.workbook.dto.ReviewDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,26 +35,17 @@ public class MissionConverter {
                 .build();
     }
 
-    public static List<MissionDto.MemberList> toMissionByMember(List<MemberMission> missions){
-        return missions.stream().map(m -> MissionConverter.toMemberListDto(m, m.getMission().getStore(),
-                m.getMission(), m.getMember())).collect(Collectors.toList());
-
+    public static List<MissionDto.MemberList> toMemberDtoList(List<MemberMission> missions){
+        return missions.stream().map(MissionConverter::toMemberDto).toList();
     }
 
-    private static MissionDto.MemberList toMemberListDto(MemberMission memberMission, Store store,
-                                                         Mission mission, Member member) {
-        MissionDto.StoreDto storeDto = MissionDto.StoreDto.builder()
-                .id(store.getId())
-                .name(store.getName())
-                .build();
-
+    private static MissionDto.MemberList toMemberDto(MemberMission memberMission) {
         return MissionDto.MemberList.builder()
                 .id(memberMission.getId())
                 .status(memberMission.getStatus())
-                .missionSpec(mission.getMissionSpec())
-                .reward(mission.getReward())
-                .memberId(member.getId())
-                .storeDto(storeDto)
+                .missionSpec(memberMission.getMission().getMissionSpec())
+                .reward(memberMission.getMission().getReward())
+                .memberId(memberMission.getMission().getId())
                 .build();
     }
 

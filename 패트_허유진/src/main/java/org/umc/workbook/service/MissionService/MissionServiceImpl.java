@@ -36,9 +36,22 @@ public class MissionServiceImpl implements MissionService {
 
     // 회원의 진행 중 미션 확인
     @Override
-    public List<MemberMission> findMissionByMember(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {
-        return missionRepository
-                .findMissionByMemberPaging(memberId, lastReward, lastCreatedAt, lastMissionId);
+    public MissionDto.CursorResponseDto findMissionByMember(Long memberId, Integer lastReward, LocalDateTime lastCreatedAt, Long lastMissionId) {
+        int pageSize = 10;
+
+        List<MemberMission> results = missionRepository
+                .findMissionByMemberPaging(memberId, lastReward, lastCreatedAt, lastMissionId, pageSize + 1);
+
+        boolean hasNext = results.size() > pageSize;
+
+        if (hasNext) {
+            results = results.subList(0, pageSize);
+        }
+
+        return MissionDto.CursorResponseDto.builder()
+                .hasNext(hasNext)
+                .missionList(MissionConverter.toMemberDtoList(results))
+                .build();
     }
 
     @Override
