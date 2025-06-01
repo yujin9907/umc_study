@@ -50,4 +50,12 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Storeimage> iamges = new ArrayList<>();
 
+
+    public void setType(StoreType type) {
+        this.type = type;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
 }

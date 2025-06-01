@@ -34,4 +34,12 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review")
     private List<ReviewImage> images = new ArrayList<>();
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
 }

@@ -2,6 +2,9 @@ package org.umc.workbook.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.umc.workbook.domain.common.BaseEntity;
 import org.umc.workbook.domain.enums.Gender;
 import org.umc.workbook.domain.enums.MemberStatus;
@@ -20,6 +23,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DynamicUpdate
+@DynamicInsert
 @Table(name = "member")
 public class Member extends BaseEntity {
     @Id
@@ -53,6 +58,7 @@ public class Member extends BaseEntity {
     @Column(nullable = true, length = 50)
     private String email;
 
+    @ColumnDefault("0")
     @Column(nullable = false)
     private Integer point;
 
